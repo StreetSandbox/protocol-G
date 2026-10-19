@@ -44,8 +44,12 @@ transform:translateY(-110%);transition:transform .28s cubic-bezier(.2,.9,.3,1)}
 #log .g{color:var(--g);text-shadow:0 0 5px var(--g)}#log .a{color:var(--a)}#log .r{color:var(--r)}
 #bar{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:10px;color:#6fbf8f;border:1px solid var(--ln);background:rgba(16,20,18,.95)}
 #bar b{color:var(--g)}.blink{animation:bl 1.2s steps(1) infinite}
-#zone{position:fixed;left:33%;right:34%;top:20%;bottom:20%;border:1px dashed rgba(0,255,102,.18);pointer-events:none;z-index:6}
-#zone::before{content:"GRACE ZONE";position:absolute;top:-14px;left:0;font-size:9px;color:rgba(0,255,102,.35);letter-spacing:.2em}
+#fx{position:fixed;inset:0;width:100%;height:100%;z-index:40;pointer-events:none}
+#off{position:fixed;inset:0;z-index:100;background:#000;display:none}
+#off.on{display:block}
+.boot #app{animation:bt .6s ease-out}
+@keyframes bt{0%{filter:brightness(3) contrast(1.6)}100%{filter:none}}
+
 #ov{position:fixed;inset:0;z-index:20;background:rgba(0,20,8,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;opacity:0;pointer-events:none;transition:all .5s ease}
 #ov.on{opacity:1;pointer-events:auto}
 #ov svg{width:min(46vmin,380px);filter:drop-shadow(0 0 18px var(--g));animation:pulse 1s ease-in-out infinite}
@@ -97,7 +101,8 @@ transform:translateY(-110%);transition:transform .28s cubic-bezier(.2,.9,.3,1)}
   <span>PKT <b id="pkt">0</b></span>
  </footer>
 </div>
-<div id="zone"></div>
+<canvas id="fx"></canvas>
+<div id="off"></div>
 <div id="ov">
  <svg viewBox="0 0 200 220" fill="none" stroke="#00FF66" stroke-width="5">
   <path d="M100 8 L184 40 V104 C184 154 148 194 100 212 C52 194 16 154 16 104 V40 Z" fill="rgba(0,255,102,.08)"/>
@@ -116,7 +121,7 @@ transform:translateY(-110%);transition:transform .28s cubic-bezier(.2,.9,.3,1)}
 const $=s=>document.querySelector(s),R=(a,b)=>Math.random()*(b-a)+a,RI=(a,b)=>Math.floor(R(a,b+1)),pick=a=>a[RI(0,a.length-1)];
 const HEX='0123456789ABCDEF',hx=n=>Array.from({length:n},()=>HEX[RI(0,15)]).join('');
 const L=$('#log'),term=$('#term'),cv=$('#cv'),cx=cv.getContext('2d'),ts=$('#ts');
-let loop=0,tmr=0,mode='idle',melting=false,W=0,H=0;
+let loop=0,tmr=0,mode='idle',melting=false,W=0,H=0,netSpike=0;
 
 function log(t,c){const d=document.createElement('div');d.className='l '+(c||'');d.textContent=new Date().toISOString().slice(11,19)+' '+t;L.prepend(d);while(L.children.length>40)L.lastChild.remove();}
 function toast(t){ts.textContent=t;ts.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>ts.classList.remove('on'),900);}
@@ -126,13 +131,13 @@ function stop(){cancelAnimationFrame(loop);clearInterval(tmr);mode='idle';cv.sty
 function showCv(){term.style.display='none';cv.style.display='block';sizeCv();cx.fillStyle='#000';cx.fillRect(0,0,W,H);}
 
 /* ---------- boot typing ---------- */
-const boot=['NETWATCH TACTICAL TERMINAL v7.4.1','> INITIALISING KERNEL ........ OK','> MOUNTING ENCRYPTED VOLUMES .. OK','> HANDSHAKE WITH SAT_LINK_DELTA  OK','> GRACE ZONE ARMED (CENTRE 33-66%)','','GESTURE MAP','  SWIPE RIGHT  : ACCESS GRANTED','  SWIPE UP     : DEVICE OVERRIDE','  SWIPE DOWN   : DATA STREAM INDUCTION','  SWIPE LEFT   : DECRYPTION MATRIX','','AWAITING OPERATOR INPUT'];
+const boot=['NETWATCH TACTICAL TERMINAL v7.4.1','> INITIALISING KERNEL ........ OK','> MOUNTING ENCRYPTED VOLUMES .. OK','> HANDSHAKE WITH SAT_LINK_DELTA  OK','> MULTI-TOUCH ENGINE ARMED (FULLSCREEN)','','GESTURE MAP','  SWIPE RIGHT  : ACCESS GRANTED','  SWIPE UP     : DEVICE OVERRIDE','  SWIPE DOWN   : DATA STREAM INDUCTION','  SWIPE LEFT   : DECRYPTION MATRIX','  TAP          : PING RECON NETWORK','  DOUBLE TAP   : SYSTEM SHUTDOWN','  HOLD 0.5s    : TARGET BEACON','','AWAITING OPERATOR INPUT'];
 (function type(){let i=0,j=0,out='';(function step(){if(i>=boot.length)return;const s=boot[i];if(j<s.length){term.textContent=out+s.slice(0,++j);setTimeout(step,12);}else{out+=s+'\n';i++;j=0;setTimeout(step,70);}})();})();
 
 /* ---------- diagnostics ---------- */
 const cs=[$('#c1'),$('#c2'),$('#c3')],hist=[[],[],[]],cols=['#00FF66','#FFB300','#00FF66'];
 function spark(){cs.forEach((c,k)=>{const r=c.getBoundingClientRect(),w=c.width=r.width*2,h=c.height=r.height*2,x=c.getContext('2d'),a=hist[k];
- a.push(k==0?R(15,95):k==1?Math.min(92,(a[a.length-1]||60)+R(-6,6)):(Math.random()<.2?R(70,100):R(5,40)));if(a.length>40)a.shift();
+ a.push(k==0?R(15,95):k==1?Math.min(92,(a[a.length-1]||60)+R(-6,6)):(performance.now()<netSpike?100:Math.random()<.2?R(70,100):R(5,40)));if(a.length>40)a.shift();
  x.clearRect(0,0,w,h);x.strokeStyle=cols[k];x.fillStyle=cols[k];x.lineWidth=2;
  if(k==0){const bw=w/40;a.forEach((v,i)=>x.fillRect(i*bw+1,h-v/100*h,bw-2,v/100*h));}
  else{x.beginPath();a.forEach((v,i)=>{const px=i*w/39,py=h-v/100*h;i?x.lineTo(px,py):x.moveTo(px,py);});x.stroke();}});
@@ -145,12 +150,63 @@ const idle=['[INFO] PORT SCAN 10.4.2.'+RI(1,254)+' CLOSED','[INFO] HEARTBEAT FRO
 setInterval(()=>{if(!melting&&mode!=='granted')log(pick(idle).replace(/\d+$/,m=>RI(1,254)));},2600);
 
 /* ---------- gesture engine ---------- */
-let sx=0,sy=0,st=0,ok=false;
-const busy=()=>$('#ov').classList.contains('on')||$('#md').classList.contains('on')||melting;
-addEventListener('pointerdown',e=>{const w=innerWidth,h=innerHeight;ok=e.clientX>w*.33&&e.clientX<w*.66&&e.clientY>h*.2&&e.clientY<h*.8;sx=e.clientX;sy=e.clientY;st=performance.now();});
-addEventListener('pointercancel',()=>ok=false);
-addEventListener('pointerup',e=>{if(!ok)return;ok=false;const dx=e.clientX-sx,dy=e.clientY-sy,ax=Math.abs(dx),ay=Math.abs(dy);
- if(Math.max(ax,ay)<70||performance.now()-st>900||busy())return;
+const fx=$('#fx'),fc=fx.getContext('2d'),off=$('#off'),ptrs=new Map(),ripples=[],holds=[];
+let lastTap={t:0,x:0,y:0},offAt=0,fxRaf=0,asleep=false;
+const SW=60,TAPMAX=12,HOLDMS=500,busy=()=>$('#ov').classList.contains('on')||$('#md').classList.contains('on')||melting;
+function fxSize(){const d=Math.min(devicePixelRatio||1,2);fx.width=innerWidth*d;fx.height=innerHeight*d;fc.setTransform(d,0,0,d,0,0);}
+fxSize();addEventListener('resize',fxSize);addEventListener('contextmenu',e=>e.preventDefault());
+function fxStart(){if(!fxRaf)fxRaf=requestAnimationFrame(fxDraw);}
+function drawReticle(h,now,al,sc){const x=h.x,y=h.y,a=(now-h.t)/1000,rr=54*sc*(.6+.4*Math.min(1,(now-h.t)/180));
+ fc.save();fc.translate(x,y);fc.globalAlpha=al;
+ fc.strokeStyle='#FF3333';fc.lineWidth=1.5;fc.beginPath();fc.arc(0,0,rr,0,7);fc.stroke();
+ fc.save();fc.rotate(a*1.6);fc.setLineDash([10,6]);fc.strokeStyle='rgba(255,51,51,.8)';fc.beginPath();fc.arc(0,0,rr+8,0,7);fc.stroke();fc.restore();
+ fc.save();fc.rotate(-a*2.2);fc.lineWidth=2.5;fc.strokeStyle='#FFB300';for(let i=0;i<4;i++){fc.beginPath();fc.arc(0,0,rr-6,i*Math.PI/2+.15,i*Math.PI/2+.75);fc.stroke();}fc.restore();
+ const sa=a*4.5;fc.save();fc.beginPath();fc.arc(0,0,rr-10,0,7);fc.clip();
+ for(let i=0;i<22;i++){fc.fillStyle='rgba(0,255,102,'+(.28-i*.012).toFixed(3)+')';fc.beginPath();fc.moveTo(0,0);fc.arc(0,0,rr,sa-i*.045-.045,sa-i*.045);fc.closePath();fc.fill();}
+ fc.strokeStyle='#00FF66';fc.lineWidth=1.5;fc.beginPath();fc.moveTo(0,0);fc.lineTo(Math.cos(sa)*rr,Math.sin(sa)*rr);fc.stroke();
+ fc.strokeStyle='rgba(0,255,102,.35)';fc.lineWidth=1;[.33,.66].forEach(k=>{fc.beginPath();fc.arc(0,0,(rr-10)*k,0,7);fc.stroke();});fc.restore();
+ fc.strokeStyle='#FF3333';fc.lineWidth=1.5;for(let i=0;i<4;i++){fc.save();fc.rotate(i*Math.PI/2);fc.beginPath();fc.moveTo(rr+14,0);fc.lineTo(rr+26,0);fc.stroke();fc.restore();}
+ fc.fillStyle='#FFB300';fc.beginPath();fc.arc(0,0,2.5,0,7);fc.fill();
+ const lx=x>innerWidth-270?-(rr+34):rr+34;fc.textAlign=lx<0?'right':'left';
+ fc.font='bold 11px "Courier New",monospace';fc.fillStyle='#FFB300';fc.fillText('TRK_X: '+Math.round(x)+' // TRK_Y: '+Math.round(y),lx,-3);
+ fc.font='10px "Courier New",monospace';fc.fillStyle='#FF3333';fc.fillText('TARGET COMPROMISED // BEACON LIVE',lx,11);
+ fc.restore();}
+function fxDraw(now){fxRaf=0;fc.clearRect(0,0,innerWidth,innerHeight);
+ for(let i=ripples.length-1;i>=0;i--){const r=ripples[i],k=(now-r.t)/750;if(k>=1){ripples.splice(i,1);continue;}
+  for(let j=0;j<3;j++){const kk=k-j*.12;if(kk<=0)continue;fc.strokeStyle='rgba(0,255,102,'+(.9*(1-kk)).toFixed(3)+')';fc.lineWidth=j?1:2;fc.beginPath();fc.arc(r.x,r.y,8+kk*150,0,7);fc.stroke();}
+  fc.fillStyle='rgba(0,255,102,'+(1-k).toFixed(3)+')';fc.beginPath();fc.arc(r.x,r.y,3,0,7);fc.fill();}
+ for(let i=holds.length-1;i>=0;i--){const h=holds[i];let al=1,sc=1;
+  if(h.fade){const f=(now-h.fade)/380;if(f>=1){holds.splice(i,1);continue;}al=1-f;sc=1+f*.35;}
+  drawReticle(h,now,al,sc);}
+ if(ripples.length||holds.length)fxRaf=requestAnimationFrame(fxDraw);}
+function ping(x,y){ripples.push({x:x,y:y,t:performance.now()});fxStart();netSpike=performance.now()+500;spark();setTimeout(spark,220);setTimeout(spark,440);
+ const n='NODE_'+hx(2);log('[PING] ECHO REQUEST SENT TO '+n,'g');setTimeout(()=>log('[OK] ECHO REPLY '+n+' '+RI(4,58)+'ms','g'),160);}
+function tap(x,y){const now=performance.now();
+ if(now-lastTap.t<320&&Math.hypot(x-lastTap.x,y-lastTap.y)<48){lastTap.t=0;shutdown();return;}
+ lastTap={t:now,x:x,y:y};ping(x,y);}
+function shutdown(){if(melting)reset();$('#md').classList.remove('on');$('#ov').classList.remove('on');stop();
+ ripples.length=0;holds.length=0;ptrs.forEach(p=>{clearTimeout(p.timer);p.dead=true;});fc.clearRect(0,0,innerWidth,innerHeight);ts.classList.remove('on');
+ asleep=true;offAt=performance.now();off.classList.add('on');}
+function wake(){asleep=false;off.classList.remove('on');document.body.classList.add('boot');setTimeout(()=>document.body.classList.remove('boot'),650);
+ term.textContent='RE-ESTABLISHING COLD COUPLING...';log('[BOOT] RE-ESTABLISHING COLD COUPLING...','a');
+ setTimeout(()=>{if(mode==='idle')term.textContent='RE-ESTABLISHING COLD COUPLING... DONE\nLINK RESTORED // AWAITING OPERATOR INPUT';log('[OK] LINK RESTORED','g');},900);}
+addEventListener('pointerdown',e=>{
+ if(asleep){if(performance.now()-offAt>300)wake();ptrs.set(e.pointerId,{dead:true});return;}
+ if((e.target.closest&&e.target.closest('button'))||busy()){ptrs.set(e.pointerId,{dead:true});return;}
+ const p={id:e.pointerId,sx:e.clientX,sy:e.clientY,x:e.clientX,y:e.clientY,t:performance.now(),held:null,multi:false,dead:false};
+ ptrs.set(e.pointerId,p);if(ptrs.size>1)ptrs.forEach(q=>q.multi=true);
+ p.timer=setTimeout(()=>{if(p.dead||!ptrs.has(p.id)||busy())return;
+  p.held={x:p.x,y:p.y,t:performance.now(),fade:null};holds.push(p.held);fxStart();log('[TRACK] BEACON LOCKED '+Math.round(p.x)+','+Math.round(p.y),'r');},HOLDMS);});
+addEventListener('pointermove',e=>{const p=ptrs.get(e.pointerId);if(!p||p.dead)return;p.x=e.clientX;p.y=e.clientY;
+ if(p.held){p.held.x=p.x;p.held.y=p.y;return;}
+ if(Math.hypot(p.x-p.sx,p.y-p.sy)>15)clearTimeout(p.timer);});
+addEventListener('pointercancel',e=>{const p=ptrs.get(e.pointerId);ptrs.delete(e.pointerId);if(!p||p.dead)return;clearTimeout(p.timer);if(p.held)p.held.fade=performance.now();});
+addEventListener('pointerup',e=>{const p=ptrs.get(e.pointerId);ptrs.delete(e.pointerId);if(!p||p.dead)return;clearTimeout(p.timer);
+ if(p.held){p.held.fade=performance.now();log('[TRACK] BEACON RELEASED','a');return;}
+ if(p.multi||busy())return;
+ const dx=e.clientX-p.sx,dy=e.clientY-p.sy,ax=Math.abs(dx),ay=Math.abs(dy),dt=performance.now()-p.t;
+ if(Math.hypot(dx,dy)<TAPMAX&&dt<350){tap(e.clientX,e.clientY);return;}
+ if(Math.max(ax,ay)<SW||dt>900)return;
  if(ax>ay*1.2){if(dx>0){toast('SWIPE L \u2192 R');granted();}else{toast('SWIPE R \u2192 L');decrypt();}}
  else if(ay>ax*1.2){if(dy<0){toast('SWIPE UP');override();}else{toast('SWIPE DOWN');induct();}}});
 ['gesturestart','gesturechange','dblclick'].forEach(n=>addEventListener(n,e=>e.preventDefault()));
