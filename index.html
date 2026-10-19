@@ -2,11 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <title>NETWATCH Surveillance Terminal</title>
 <style>
 :root{--bg:#05070a;--panel:#0a1016;--line:#123;--cyan:#4ff;--blue:#3aa0ff;--green:#38ff9c;--red:#ff4a5e;--amber:#ffcc4d}
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+html,body{touch-action:none;overscroll-behavior:none}
 body{background:var(--bg);color:#bfe9ff;font:12px/1.45 "Courier New",monospace;height:100vh;overflow:hidden;display:flex;flex-direction:column}
 header{padding:10px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;background:#070d12}
 header h1{font-size:14px;color:var(--cyan);letter-spacing:2px}
@@ -96,41 +99,27 @@ function stopCharge(){clearInterval(chargeTimer);chargeTimer=null;}
 function canvasPos(e){const r=canvas.getBoundingClientRect(),t=e.changedTouches?e.changedTouches[0]:e;return{x:t.clientX-r.left,y:t.clientY-r.top};}
 function nodeHit(e){if(!node)return false;const r=node.getBoundingClientRect(),t=e.changedTouches?e.changedTouches[0]:e;return t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom;}
 
-// Double-tap deployment: works for touch and mouse.
 function handleTap(e){
   const now=Date.now(), p=canvasPos(e), onNode=nodeHit(e);
   if(onNode){
     if(now-pressStart<250&&!moved)failNode();
     return;
   }
-  if(now-lastTap<300){
-    lastTap=0;spawn(p.x,p.y);
-  }else lastTap=now;
+  if(now-lastTap<300){lastTap=0;spawn(p.x,p.y);}
+  else lastTap=now;
 }
-canvas.addEventListener("touchend",e=>{e.preventDefault();handleTap(e);},{passive:false});
-canvas.addEventListener("click",e=>{if(e.pointerType!=="touch")handleTap(e);});
 
-// Pointer press, hold-to-charge, and drag.
-function down(e){
-  if(!node||!nodeHit(e))return;
-  e.preventDefault();pressStart=Date.now();moved=false;dragging=true;
-  node.setPointerCapture&&node.setPointerCapture(e.pointerId);
-  pressTimer=setTimeout(()=>{if(!moved&&Date.now()-pressStart>=250)startCharge();},250);
-}
-function move(e){
-  if(!dragging||!node)return;
-  const p=canvasPos(e);moved=true;
-  node.style.left=p.x+"px";node.style.top=p.y+"px";
-  updateState();
-}
-function up(e){
-  clearTimeout(pressTimer);pressTimer=null;
-  if(dragging){dragging=false;stopCharge();handleTap(e);}
-}
-canvas.addEventListener("pointerdown",down);
-canvas.addEventListener("pointermove",move);
-canvas.addEventListener("pointerup",up);
-canvas.addEventListener("pointercancel",()=>{clearTimeout(pressTimer);dragging=false;stopCharge();});
+canvas.addEventListener("touchstart",e=>{e.preventDefault();const p=canvasPos(e);if(node&&nodeHit(e)){pressStart=Date.now();moved=false;dragging=true;pressTimer=setTimeout(()=>{if(!moved&&Date.now()-pressStart>=250)startCharge();},250);}},{passive:false});
+
+canvas.addEventListener("touchmove",e=>{e.preventDefault();if(!dragging||!node)return;const p=canvasPos(e);moved=true;node.style.left=p.x+"px";node.style.top=p.y+"px";updateState();},{passive:false});
+
+canvas.addEventListener("touchend",e=>{e.preventDefault();clearTimeout(pressTimer);pressTimer=null;if(dragging){dragging=false;stopCharge();}handleTap(e);},{passive:false});
+
+canvas.addEventListener("touchcancel",e=>{e.preventDefault();clearTimeout(pressTimer);pressTimer=null;dragging=false;stopCharge();},{passive:false});
+
+canvas.addEventListener("mousedown",e=>{if(node&&nodeHit(e)){pressStart=Date.now();moved=false;dragging=true;pressTimer=setTimeout(()=>{if(!moved&&Date.now()-pressStart>=250)startCharge();},250);}});
+canvas.addEventListener("mousemove",e=>{if(!dragging||!node)return;const p=canvasPos(e);moved=true;node.style.left=p.x+"px";node.style.top=p.y+"px";updateState();});
+canvas.addEventListener("mouseup",e=>{clearTimeout(pressTimer);pressTimer=null;if(dragging){dragging=false;stopCharge();handleTap(e);}});
 
 // Diagnostics and footer tickers.
 const metrics=[["CPU CORE LOAD",0],["MEM ALLOCATION",0],["NET THROUGHPUT",0],["SENSOR ARRAY",0]];
