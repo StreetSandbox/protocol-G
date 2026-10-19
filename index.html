@@ -10,58 +10,58 @@
 <meta name="theme-color" content="#000000">
 <title>NETWATCH Surveillance Terminal</title>
 <style>
-:root{--g:#00FF66;--a:#FFB300;--r:#FF3333;--s:#101412;--ln:#0d4a27;color-scheme:dark;box-sizing:border-box;background:#000;
+:root{--g:#00FF66;--a:#FFB300;--r:#FF3333;--s:#101412;--ln:rgba(16,185,129,.3);color-scheme:dark;box-sizing:border-box;background:#000;
 padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
 *{box-sizing:border-box;margin:0;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overflow:hidden;touch-action:none;overscroll-behavior:none;background:#000;color:var(--g);font:13px/1.4 "Courier New",Courier,monospace}
+html,body{height:100%;overflow:hidden;touch-action:none;overscroll-behavior:none;background:#000;color:var(--g);font:12px/1.45 "Courier New",Courier,monospace}
 button{font:inherit;cursor:pointer;touch-action:manipulation}
 #app{height:100%;display:grid;grid-template-columns:23% 1fr 27%;grid-template-rows:1fr 32px;gap:6px;padding:6px;position:relative;
 background:linear-gradient(rgba(0,255,102,.05) 1px,transparent 1px) 0 0/28px 28px,linear-gradient(90deg,rgba(0,255,102,.05) 1px,transparent 1px) 0 0/28px 28px,#000}
 #app::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:5;background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 3px);animation:scan 6s linear infinite}
 @keyframes scan{to{background-position:0 60px}}
-.p{border:1px solid var(--ln);background:rgba(16,20,18,.92);position:relative;overflow:hidden;padding:10px;min-height:0}
+.p{border:1px solid var(--ln);background:rgba(16,20,18,.92);position:relative;overflow:hidden;padding:16px;min-height:0;text-align:left}
 h3{font-size:12px;letter-spacing:.12em;color:var(--g);border-bottom:1px solid var(--ln);padding-bottom:5px;margin-bottom:8px;font-weight:700}
 #left canvas{width:100%;height:64px;display:block;margin-bottom:4px;border:1px solid var(--ln)}
-.st{display:flex;justify-content:space-between;color:#6fbf8f;font-size:11px;margin-bottom:8px}.st b{color:var(--g)}
+.st{display:flex;justify-content:space-between;color:#6fbf8f;font-size:10px;margin-bottom:8px}.st b{color:var(--g)}
 #mid{padding:0}
-#term{position:absolute;inset:0;padding:12px;white-space:pre-wrap;overflow:hidden;color:var(--g)}
+#term{position:absolute;inset:0;padding:16px;white-space:pre-wrap;overflow:hidden;color:var(--g)}
 #term::after{content:"\2588";animation:bl 1s steps(1) infinite}
 @keyframes bl{50%{opacity:0}}
 #cv{position:absolute;inset:0;width:100%;height:100%;display:none;background:#000}
-#kw{position:absolute;left:10px;right:10px;top:0;z-index:4;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px;background:rgba(8,6,0,.96);border:1px solid var(--a);
+#kw{position:absolute;left:10px;right:10px;top:0;z-index:4;display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px;background:rgba(8,6,0,.96);border:1px solid rgba(255,179,0,.4);
 transform:translateY(-110%);transition:transform .28s cubic-bezier(.2,.9,.3,1)}
 #kw.on{transform:translateY(10px)}
 #kw h4{grid-column:1/-1;color:var(--a);font-size:11px;letter-spacing:.14em}
 #kw button{background:#120d00;color:var(--a);border:1px solid var(--a);padding:16px 8px;font-weight:700;letter-spacing:.08em;text-shadow:0 0 6px rgba(255,179,0,.6)}
 #kw button:active{background:var(--a);color:#000}
 #flush{position:absolute;right:12px;bottom:12px;z-index:4;display:none;background:#000;color:var(--a);border:1px solid var(--a);padding:12px 18px;font-weight:700}
-#hud{position:absolute;left:12px;top:10px;z-index:3;display:none;color:var(--g);font-weight:700;font-size:15px;text-shadow:0 0 8px var(--g)}
-#tgt{position:absolute;left:12px;bottom:10px;z-index:3;display:none;font-size:11px;color:var(--g);max-width:70%}
+#hud{position:absolute;left:16px;top:14px;z-index:3;display:none;color:var(--g);font-weight:700;font-size:15px;text-shadow:0 0 8px var(--g)}
+#tgt{position:absolute;left:16px;bottom:14px;z-index:3;display:none;font-size:11px;color:var(--g);max-width:70%}
 #tgt div{margin-top:2px;background:rgba(0,0,0,.6)}
 #bn{position:absolute;left:0;right:0;top:42%;z-index:6;display:none;text-align:center;padding:18px 8px;background:rgba(0,40,15,.92);border-block:2px solid var(--g);font-size:18px;font-weight:700;letter-spacing:.08em;text-shadow:0 0 10px var(--g);animation:bl 0.7s steps(1) 6}
-#log{font-size:11px;height:calc(100% - 28px);overflow:hidden}
+#log{font-size:10.5px;height:calc(100% - 34px);overflow:hidden}
 #log .l{color:#52b37b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #log .g{color:var(--g);text-shadow:0 0 5px var(--g)}#log .a{color:var(--a)}#log .r{color:var(--r)}
-#bar{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:11px;color:#6fbf8f;border:1px solid var(--ln);background:rgba(16,20,18,.95)}
+#bar{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:10px;color:#6fbf8f;border:1px solid var(--ln);background:rgba(16,20,18,.95)}
 #bar b{color:var(--g)}.blink{animation:bl 1.2s steps(1) infinite}
 #zone{position:fixed;left:33%;right:34%;top:20%;bottom:20%;border:1px dashed rgba(0,255,102,.18);pointer-events:none;z-index:6}
 #zone::before{content:"GRACE ZONE";position:absolute;top:-14px;left:0;font-size:9px;color:rgba(0,255,102,.35);letter-spacing:.2em}
-#ov{position:fixed;inset:0;z-index:20;background:rgba(0,20,8,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;opacity:0;pointer-events:none;transition:opacity .5s}
+#ov{position:fixed;inset:0;z-index:20;background:rgba(0,20,8,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;opacity:0;pointer-events:none;transition:all .5s ease}
 #ov.on{opacity:1;pointer-events:auto}
 #ov svg{width:min(46vmin,380px);filter:drop-shadow(0 0 18px var(--g));animation:pulse 1s ease-in-out infinite}
 @keyframes pulse{50%{transform:scale(1.07)}}
 #shk{transform-origin:100px 96px;transition:transform .9s .5s cubic-bezier(.3,1.6,.5,1)}
 #ov.on #shk{transform:translateY(-22px) rotate(-38deg)}
 #ov h1{font-size:clamp(16px,3.2vw,30px);text-align:center;letter-spacing:.1em;text-shadow:0 0 14px var(--g);animation:bl .5s steps(1) infinite;padding:0 16px}
-#md{position:fixed;inset:0;z-index:22;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center}
-#md.on{display:flex}
-#md div{width:min(86vw,520px);border:2px solid var(--r);background:#120404;padding:26px;text-align:center;box-shadow:0 0 40px rgba(255,51,51,.5);animation:pop .22s ease-out}
+#md{position:fixed;inset:0;z-index:22;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;pointer-events:none;transition:all .5s ease}
+#md.on{opacity:1;visibility:visible;pointer-events:auto}
+#md div{width:min(86vw,520px);border:1px solid rgba(255,51,51,.6);background:#120404;padding:26px;text-align:center;box-shadow:0 0 40px rgba(255,51,51,.5);animation:pop .22s ease-out}
 @keyframes pop{from{transform:scale(.8);opacity:0}}
 #md p{color:var(--r);font-weight:700;font-size:17px;letter-spacing:.06em;margin-bottom:22px}
 #md button{width:46%;padding:20px 0;font-weight:700;font-size:20px;border:0;margin:0 1.5%;color:#000}
 #yes{background:var(--r)}#no{background:var(--g)}
-#melt{position:fixed;inset:0;z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;color:#fff;animation:fl .35s steps(1) infinite}
-#melt.on{display:flex}
+#melt{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;color:#fff;animation:fl .35s steps(1) infinite;opacity:0;visibility:hidden;pointer-events:none;transition:all .5s ease}
+#melt.on{opacity:1;visibility:visible;pointer-events:auto}
 @keyframes fl{0%{background:rgba(255,0,0,.55)}50%{background:rgba(60,0,0,.8)}}
 #melt h1{font-size:clamp(28px,7vw,64px);letter-spacing:.1em;text-shadow:0 0 20px #000}
 #melt .t{font-size:clamp(22px,5vw,44px);font-weight:700}
@@ -141,7 +141,7 @@ setInterval(spark,450);spark();
 const t0=Date.now();let pk=0;
 setInterval(()=>{const s=Math.floor((Date.now()-t0)/1000);$('#up').textContent=[s/3600,s/60%60,s%60].map(v=>String(Math.floor(v)).padStart(2,'0')).join(':');
  pk+=RI(200,900);$('#pkt').textContent=pk.toLocaleString('en-US');$('#lat').textContent=R(-90,90).toFixed(4);$('#lon').textContent=R(-180,180).toFixed(4);},300);
-const idle=['PORT SCAN 10.4.2.'+RI(1,254)+' CLOSED','HEARTBEAT FROM NODE '+hx(4),'PKT FLOW NOMINAL','CERT ROTATION QUEUED','ROUTE TABLE SYNC OK'];
+const idle=['[INFO] PORT SCAN 10.4.2.'+RI(1,254)+' CLOSED','[INFO] HEARTBEAT FROM NODE '+hx(4),'[INFO] PKT FLOW NOMINAL','[INFO] CERT ROTATION QUEUED','[INFO] ROUTE TABLE SYNC OK','[WARN] LATENCY SPIKE ON UPLINK'];
 setInterval(()=>{if(!melting&&mode!=='granted')log(pick(idle).replace(/\d+$/,m=>RI(1,254)));},2600);
 
 /* ---------- gesture engine ---------- */
@@ -158,33 +158,34 @@ addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
 
 /* ---------- 1. ACCESS GRANTED ---------- */
 function granted(){const o=$('#ov');mode='granted';o.classList.add('on');
- const P=['AUTH/KERBEROS','TLS1.3 PINNED KEY','LDAP BIND ROOT','SAT_LINK_DELTA UPLINK','VAULT UNSEAL SHARD','FIREWALL RULESET 0','IDS SIGNATURE MUTE','TOKEN FORGE ADMIN','SSH AGENT FORWARD','PRIV ESC UID 0'];
- const iv=setInterval(()=>log('AUTHORISED '+pick(P)+' 0x'+hx(6),'g'),70);
- setTimeout(()=>{clearInterval(iv);o.classList.remove('on');mode='idle';log('MAIN SYSTEM BYPASS COMPLETE','g');},3500);}
+ const G=[()=>'[OK] BYPASS SUCCEEDED',()=>'[INFO] EXTRACTING SECTOR KEY...',()=>'[OK] AUTH TOKEN 0x'+hx(6)+' ACCEPTED',()=>'[INFO] DECRYPTING VAULT BLOCK '+RI(1,64)+'/64',()=>'[OK] FIREWALL RULESET 0 DROPPED',()=>'[INFO] NEGOTIATING TLS 1.3 SESSION...',()=>'[OK] ROOT SHELL GRANTED UID 0',()=>'[INFO] MAPPING SUBNET 10.'+RI(0,255)+'.0.0/16',()=>'[OK] SAT_LINK_DELTA UPLINK LOCKED'];let gi=RI(0,8);
+ const iv=setInterval(()=>log(G[gi++%G.length](),'g'),80);
+ setTimeout(()=>{clearInterval(iv);o.classList.remove('on');mode='idle';log('[OK] MAIN SYSTEM BYPASS COMPLETE','g');},3500);}
 
 /* ---------- 2. DEVICE OVERRIDE ---------- */
-let actx,beepIv,meltRaf;
+let actx,beepIv,meltRaf,meltLog,mi=RI(0,9);
+const MLOG=[()=>'[CRITICAL] CORE OVERHEATING',()=>'[WARN] COOLANT PRESSURE DROPPING',()=>'[CRITICAL] CORE TEMP '+RI(2400,4800)+'K',()=>'[WARN] COOLANT FLOW '+RI(3,40)+'% NOMINAL',()=>'[CRITICAL] CONTAINMENT FIELD FAILING',()=>'[WARN] RADIATION LEAK SECTOR '+RI(1,9),()=>'[CRITICAL] FUEL ROD BREACH '+hx(4),()=>'[WARN] PRESSURE VALVE '+RI(1,12)+' STUCK',()=>'[CRITICAL] SHUTDOWN SEQUENCE REJECTED',()=>'[WARN] VENT FAN '+RI(1,8)+' OFFLINE'];
 function override(){$('#md').classList.add('on');log('OVERRIDE REQUEST PENDING','r');}
 $('#no').onclick=()=>{$('#md').classList.remove('on');log('Override Aborted','a');};
 $('#yes').onclick=()=>{$('#md').classList.remove('on');meltdown();};
 function beep(){try{actx=actx||new(window.AudioContext||window.webkitAudioContext)();const o=actx.createOscillator(),g=actx.createGain();o.type='square';o.frequency.value=880;g.gain.value=.04;o.connect(g);g.connect(actx.destination);o.start();o.stop(actx.currentTime+.08);}catch(e){}}
 function meltdown(){melting=true;stop();const m=$('#melt'),b=document.body,s=performance.now();m.classList.add('on');b.classList.add('glitch');$('#mh').textContent='MELTDOWN IMMINENT';
- log('OVERRIDE AUTHORISED - CORE UNSTABLE','r');beepIv=setInterval(()=>{beep();log('CORE TEMP CRITICAL '+RI(900,3000)+'K','r');},300);
+ log('[CRITICAL] OVERRIDE AUTHORISED - CORE UNSTABLE','r');beepIv=setInterval(beep,300);meltLog=setInterval(()=>log(MLOG[mi++%MLOG.length](),'r'),110);
  (function tick(){const t=(performance.now()-s)/1000,p=Math.min(100,t*t*1.6);$('#mt').textContent='T+'+t.toFixed(2)+'s';$('#mp').textContent='CORE '+p.toFixed(2)+'%';
   if(p>=100)$('#mh').textContent='MELTDOWN';meltRaf=requestAnimationFrame(tick);})();
  setTimeout(()=>{m.onclick=reset;},500);}
-function reset(){const m=$('#melt');m.onclick=null;cancelAnimationFrame(meltRaf);clearInterval(beepIv);m.classList.remove('on');document.body.classList.remove('glitch');melting=false;log('SYSTEM RESTORED - OVERRIDE CLEARED','g');}
+function reset(){const m=$('#melt');m.onclick=null;cancelAnimationFrame(meltRaf);clearInterval(beepIv);clearInterval(meltLog);m.classList.remove('on');document.body.classList.remove('glitch');melting=false;log('SYSTEM RESTORED - OVERRIDE CLEARED','g');}
 
 /* ---------- 3. DATA STREAM INDUCTION ---------- */
 const KW=['KERBEROS','MAIN_FRAME_V3','SAT_LINK_DELTA','QUANTUM_ENTROPY','ROOT_EXPLOIT','ZERO_DAY_CACHE','SHADOW_NODE_7','PHANTOM_PROXY'];
 KW.forEach(k=>{const b=document.createElement('button');b.textContent=k;b.onclick=()=>rain(k);$('#kw').appendChild(b);});
 function induct(){stop();$('#kw').classList.add('on');log('DATA STREAM INDUCTION READY','a');}
 function rain(k){stop();mode='rain';showCv();$('#flush').style.display='block';log('STREAM INDUCTED: '+k,'a');
- const fs=13,n=Math.ceil(W/fs),y=Array.from({length:n},()=>RI(-60,0)),T=['0xDEADBEEF','/etc/shadow','SYS32.DLL','KRB5_TKT','AES256-GCM','ROOT::0','NULL_PTR','SELECT * FROM','/dev/sda1','0x7FFF3A','passwd.bak','HKLM\\SAM'];
+ const JK='GRSTNXZKM#$%&@!?<>/\\|=+*~:;_'.split(''),corrupt=s=>s.split('').map(c=>Math.random()<.18?pick(JK):c).join(''),fs=13,n=Math.ceil(W/fs),y=Array.from({length:n},()=>RI(-60,0)),sp=Array.from({length:n},()=>R(.25,2.2)),T=['0xDEADBEEF','/etc/shadow','SYS32.DLL','KRB5_TKT','AES256-GCM','ROOT::0','NULL_PTR','SELECT * FROM','/dev/sda1','0x7FFF3A','passwd.bak','HKLM\\SAM'];
  (function f(){cx.fillStyle='rgba(0,0,0,.13)';cx.fillRect(0,0,W,H);cx.font='bold '+fs+'px Courier New';
-  for(let p=0;p<2;p++)for(let i=0;i<n;i++){const yy=y[i]*fs;cx.fillStyle=Math.random()<.04?'#FFF2C2':'#FFB300';cx.fillText(HEX[RI(0,15)],i*fs,yy);
-   if(yy>H&&Math.random()>.97)y[i]=RI(-20,0);else y[i]++;}
-  cx.font=(fs-2)+'px Courier New';for(let q=0;q<3;q++){cx.fillStyle='rgba(255,200,60,.9)';cx.fillText(pick(T)+' '+hx(8),R(0,W-150),R(20,H));}
+  for(let p=0;p<2;p++)for(let i=0;i<n;i++){if(Math.random()>sp[i]/2+.1)continue;const yy=y[i]*fs,m=Math.random();cx.fillStyle=m<.04?'#FFF2C2':m<.3?'#C98600':'#FFB300';cx.fillText(Math.random()<.62?HEX[RI(0,15)]:pick(JK),i*fs,yy);
+   if(yy>H&&Math.random()>.97){y[i]=RI(-20,0);sp[i]=R(.25,2.2);}else y[i]++;}
+  cx.font=(fs-2)+'px Courier New';for(let q=0,c=RI(0,4);q<c;q++){cx.fillStyle='rgba(255,200,60,.9)';cx.fillText(corrupt(pick(T)+' '+hx(RI(2,12))),R(0,W-150),R(20,H));}
   loop=requestAnimationFrame(f);})();}
 $('#flush').onclick=()=>{stop();term.textContent='STREAM FLUSHED\nBUFFERS ZEROED\n\nAWAITING OPERATOR INPUT';log('Stream flushed','a');};
 
