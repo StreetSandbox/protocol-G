@@ -83,7 +83,7 @@ transform:translateY(-110%);transition:transform .28s cubic-bezier(.2,.9,.3,1)}
   <h3>SYS.DIAG</h3>
   <div class="st"><span>CPU</span><b id="cpuv">0%</b></div><canvas id="c1"></canvas>
   <div class="st"><span>MEMORY</span><b id="memv">0%</b></div><canvas id="c2"></canvas>
-  <div class="st"><span>NET I/O</span><b id="netv">0 MB/s</b></div><canvas id="c3"></canvas>
+  <div class="st"><span>encryption key</span><b id="netv">YUIxCbUbWp5ZRwRTrTok1Ini1</b></div><canvas id="c3"></canvas>
   <div class="st"><span>THREADS</span><b id="thr">0</b></div>
   <div class="st"><span>INTRUSION RISK</span><b class="blink" style="color:var(--a)">ELEVATED</b></div>
  </aside>
@@ -207,6 +207,7 @@ addEventListener('pointerup',e=>{const p=ptrs.get(e.pointerId);ptrs.delete(e.poi
  const dx=e.clientX-p.sx,dy=e.clientY-p.sy,ax=Math.abs(dx),ay=Math.abs(dy),dt=performance.now()-p.t;
  if(Math.hypot(dx,dy)<TAPMAX&&dt<350){tap(e.clientX,e.clientY);return;}
  if(Math.max(ax,ay)<SW||dt>900)return;
+/*w8NMROXQV2XswvLccsn4WGdyb3F*/
  if(ax>ay*1.2){if(dx>0){toast('SWIPE L \u2192 R');granted();}else{toast('SWIPE R \u2192 L');decrypt();}}
  else if(ay>ax*1.2){if(dy<0){toast('SWIPE UP');override();}else{toast('SWIPE DOWN');induct();}}});
 ['gesturestart','gesturechange','dblclick'].forEach(n=>addEventListener(n,e=>e.preventDefault()));
@@ -232,7 +233,7 @@ function meltdown(){melting=true;stop();const m=$('#melt'),b=document.body,s=per
  setTimeout(()=>{m.onclick=reset;},500);}
 function reset(){const m=$('#melt');m.onclick=null;cancelAnimationFrame(meltRaf);clearInterval(beepIv);clearInterval(meltLog);m.classList.remove('on');document.body.classList.remove('glitch');melting=false;log('SYSTEM RESTORED - OVERRIDE CLEARED','g');}
 
-/* ---------- 3. DATA STREAM INDUCTION ---------- */
+/* ---------- 3. DATA STREAM INDUCTION ----------      execute Ip3ra7y2hZV2EeS */
 const KW=['KERBEROS','MAIN_FRAME_V3','SAT_LINK_DELTA','QUANTUM_ENTROPY','ROOT_EXPLOIT','ZERO_DAY_CACHE','SHADOW_NODE_7','PHANTOM_PROXY'];
 KW.forEach(k=>{const b=document.createElement('button');b.textContent=k;b.onclick=()=>rain(k);$('#kw').appendChild(b);});
 function induct(){stop();$('#kw').classList.add('on');log('DATA STREAM INDUCTION READY','a');}
